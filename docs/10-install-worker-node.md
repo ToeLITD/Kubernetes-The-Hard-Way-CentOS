@@ -1,6 +1,6 @@
-# ติดตั้ง Kubernetes Worker Nodes
-kubelet และ kube-proxy เป็นส่วนประกอบ 2 ส่วนของ Kubernetes ที่ติดตั้งที่ Worker Node ที่ใช้ในการจัดการสิ่งต่าง ๆ ที่เกิดขี้นใน Cluster และยังต้องสื่อสารกับ master node ตลอดเวลา นอกเหนือจาก นั้นก็มี Container Runtime อีกด้วย 
-## เตรียม Kubernetes Worker Node Binaries [all worker node]
+# ຕິດຕັ້ງ Kubernetes Worker Nodes
+kubelet และ kube-proxy ເປັນສ່ວນປະກອບ 2 ສ່ວນຂອງ Kubernetes ທີ່ຕິດຕັ້ງໃນ Worker Node ທີ່ໃຊ້ໃນການຈັດຕັ້ງສີ່ງຕ່າງໆ ທີ່ເກີດຂື້ນໃນ Cluster ແລະ ຍັງຕ້ອງື່ສານກັບ master node ຕະຫຼອດເວລາ ນອກຈາກນັ້ນກໍມີ Container Runtime ອີກດ້ວຍ 
+## ກຽມພ້ອມ Kubernetes Worker Node Binaries [all worker node]
 ```
 mkdir -p \
  /etc/cni/net.d \
@@ -19,7 +19,7 @@ cd kubernetes/node/bin/
 mv kubectl kube-proxy kubelet /usr/local/bin/
 cd
 ```
-## เตรียมข้อมูลที่ใช้ในการทำงานของ kubelet [all worker node]
+## ກຽມຂໍ້ມູນທີ່ໃຊ້ໃນການເຮັດວຽກ kubelet [all worker node]
 ```
 cp ${HOSTNAME}.key ${HOSTNAME}.crt /var/lib/kubelet/
 cp ${HOSTNAME}.kubeconfig /var/lib/kubelet/kubeconfig
@@ -46,7 +46,7 @@ tlsCertFile: "/var/lib/kubelet/${HOSTNAME}.crt"
 tlsPrivateKeyFile: "/var/lib/kubelet/${HOSTNAME}.key"
 EOF
 ```
-## สร้าง kubelet.service สำหรับ systemd [all worker node]
+## ສ້າງ kubelet.service ສຳລັບ systemd [all worker node]
 ```
 cat <<EOF | sudo tee /etc/systemd/system/kubelet.service
 [Unit]
@@ -72,7 +72,7 @@ RestartSec=5
 WantedBy=multi-user.target
 EOF
 ```
-## เตรียมข้อมูลที่ใช้ในการทำงานของ kube-proxy [all worker node]
+## ກຽມຂໍ້ມູນທີ່ໃຊ້ໃນການເຮັດວຽກ kube-proxy [all worker node]
 ```
 cp kube-proxy.kubeconfig /var/lib/kube-proxy/kubeconfig
 cat <<EOF | sudo tee /var/lib/kube-proxy/kube-proxy-config.yaml
@@ -84,7 +84,7 @@ mode: "iptables"
 clusterCIDR: "10.0.0.0/16"
 EOF
 ```
-## สร้าง kube-proxy.service สำหรับ systemd [all worker node]
+## ສ້າງ kube-proxy.service ສຳລັບ systemd [all worker node]
 ```
 cat <<EOF | sudo tee /etc/systemd/system/kube-proxy.service
 [Unit]
@@ -101,22 +101,22 @@ RestartSec=5
 WantedBy=multi-user.target
 EOF
 ```
-## เริ่มการทำงานของ kubelet และ kube-proxy [all worker node]
+## ເລີ່ມການທຳງານ kubelet ແລະ kube-proxy [all worker node]
 ```
 systemctl daemon-reload
 systemctl enable kubelet kube-proxy --now
 ```
-## ทดสอบและผลการทดสอบ [master0]
+## ທົດສອບ ແລະ ຜົນການທົດສອບ [master0]
 ```
 kubectl get nodes --kubeconfig admin.kubeconfig
 ```
->ผลการทดสอบ
+>ຜົນການທົບສອບ
 ```
 NAME    STATUS     ROLES    AGE    VERSION
 node0   NotReady   <none>   10m    v1.19.0
 node1   NotReady   <none>   6m7s   v1.19.0
 ```
-> ผลที่ได้ สถานะของ node จะยังเป็น Not Ready เนื่องจาก ในส่วนของ Network ยังไม่ได้ถูกกำหนดค่า
+> ຜົນທີ່ໄດ້ ສະຖານະຂອງ node ຈະຍັງເປັນ Not Ready ເນື່ອງຈາກໃນສ່ວນຂອງ Network ຍັງບໍ່ໄດ້ຖືກກຳນົດຄ່າ
 
 **Next>** [Kubernetes Object Authorization](11-kubernetes-object-authorization.md)
 
